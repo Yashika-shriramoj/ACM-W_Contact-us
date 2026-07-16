@@ -1,108 +1,161 @@
 /* =====================================================
-   ACM-W BPHC — Contact Us page behaviour
-   Mirrors the theme-toggle / nav / dropdown logic from
-   the homepage's script.js so this page matches its
-   look and feel exactly, plus the contact-card interactions.
+   ACM-W BPHC — Contact Us page-specific styles
+   Centered, responsive, and dynamic theme switching
    ===================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+/* Theme Variables local to Contact page */
+:root {
+  --term-bg-soft: #f4f6fa;
+  --term-bg-dark: #e8ecf5;
+  --term-text: #1a233a;
+  --term-path: #5c6e91;
+  --term-border: #cbd5e1;
+  --term-row-bg: #ffffff;
+  --term-row-text: #0f172a;
+  --term-arrow: #64748b;
+  --term-icon-bg: rgba(0, 0, 0, 0.05);
+}
 
-  /* ---------------------------------------------------
-     THEME TOGGLE — same behaviour as the homepage.
-     --------------------------------------------------- */
-  const themeToggle = document.getElementById('themeToggle');
-  function currentTheme(){
-    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
-  function setTheme(theme){
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('acmw-theme', theme);
-    if(themeToggle){
-      themeToggle.setAttribute('aria-pressed', theme === 'dark');
-      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    }
-  }
-  if(themeToggle){
-    setTheme(currentTheme());
-    themeToggle.addEventListener('click', () => {
-      setTheme(currentTheme() === 'dark' ? 'light' : 'dark');
-    });
-  }
+[data-theme="dark"] :root {
+  --term-bg-soft: var(--navy-fixed-soft);
+  --term-bg-dark: var(--navy-fixed);
+  --term-text: #D9E4FF;
+  --term-path: #93A3C6;
+  --term-border: var(--line-dark);
+  --term-row-bg: var(--navy-fixed);
+  --term-row-text: #ffffff;
+  --term-arrow: #93A3C6;
+  --term-icon-bg: rgba(255, 255, 255, 0.08);
+}
 
-  /* ---------------------------------------------------
-     MOBILE NAV TOGGLE
-     --------------------------------------------------- */
-  const navToggle = document.getElementById('navToggle');
-  const mainNav = document.getElementById('mainNav');
-  if(navToggle && mainNav){
-    navToggle.addEventListener('click', () => {
-      const open = mainNav.classList.toggle('is-open');
-      navToggle.setAttribute('aria-expanded', String(open));
-    });
-  }
+/* ---------- contact layout ---------- */
+.contact-layout {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+}
 
-  /* ---------------------------------------------------
-     DOMAINS DROPDOWN
-     --------------------------------------------------- */
-  const domainsBtn = document.getElementById('domainsBtn');
-  const domainsPanel = document.getElementById('domainsPanel');
-  if(domainsBtn && domainsPanel){
-    domainsBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const open = domainsPanel.classList.toggle('is-open');
-      domainsBtn.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('click', (e) => {
-      if(!e.target.closest('.nav-dropdown')){
-        domainsPanel.classList.remove('is-open');
-        domainsBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+/* ---------- terminal contact card ---------- */
+.contact-terminal {
+  background: var(--term-bg-soft);
+  border: 1px solid var(--term-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  width: 100%;
+  max-width: 680px; /* Gives it an optimal wide width when centered */
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
 
-  /* ---------------------------------------------------
-     FOOTER YEAR
-     --------------------------------------------------- */
-  const yearEl = document.getElementById('year');
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
+.terminal-head {
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+  padding: 13px 18px;
+  background: var(--term-bg-dark);
+  border-bottom: 1px solid var(--term-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.terminal-head span { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-head span:nth-child(1) { background: #ff6060; }
+.terminal-head span:nth-child(2) { background: var(--amber); }
+.terminal-head span:nth-child(3) { background: var(--teal); }
+.terminal-head code {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--term-path);
+  transition: color 0.3s ease;
+}
 
-  /* ---------------------------------------------------
-     TERMINAL HOVER HINTS
-     --------------------------------------------------- */
-  const hintText = document.getElementById('termHintText');
-  const rows = document.querySelectorAll('.contact-row[data-hint]');
-  const defaultHint = hintText ? hintText.textContent : '';
-  rows.forEach(row => {
-    row.addEventListener('mouseenter', () => {
-      if(hintText) hintText.textContent = row.dataset.hint;
-    });
-    row.addEventListener('mouseleave', () => {
-      if(hintText) hintText.textContent = defaultHint;
-    });
-  });
+.terminal-body { padding: 26px 24px 28px; }
 
-  /* ---------------------------------------------------
-     CLICK-TO-COPY EMAIL ADDRESS
-     --------------------------------------------------- */
-  const emailRow = document.getElementById('emailRow');
-  const emailArrow = document.getElementById('emailArrow');
-  if(emailRow){
-    emailRow.addEventListener('click', async (e) => {
-      const email = emailRow.dataset.email;
-      if(!email || !navigator.clipboard) return; // fall back to the mailto link
-      e.preventDefault();
-      try{
-        await navigator.clipboard.writeText(email);
-        emailRow.classList.add('is-copied');
-        if(emailArrow) emailArrow.textContent = 'copied';
-        if(hintText) hintText.textContent = 'email address copied to clipboard';
-        setTimeout(() => {
-          emailRow.classList.remove('is-copied');
-          if(emailArrow) emailArrow.textContent = '↗';
-        }, 2200);
-      }catch(err){
-        window.location.href = `mailto:${email}`;
-      }
-    });
-  }
-});
+.term-line {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--term-text);
+  margin: 0 0 18px;
+  transition: color 0.3s ease;
+}
+.term-line .prompt { color: var(--amber); margin-right: 6px; }
+
+.contact-list {
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.contact-row a {
+  display: flex; 
+  align-items: center; 
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--term-border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--term-row-bg);
+  color: var(--term-row-text);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, color 0.3s ease;
+}
+
+.contact-row a:hover,
+.contact-row a:focus-visible {
+  border-color: var(--magenta);
+  background: var(--term-bg-soft);
+  transform: translateX(4px);
+  outline: none;
+}
+.contact-row a:focus-visible { box-shadow: 0 0 0 2px var(--magenta); }
+
+.contact-icon {
+  flex: 0 0 auto;
+  width: 36px; 
+  height: 36px;
+  border-radius: 10px;
+  background: var(--term-icon-bg);
+  color: var(--amber);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+.contact-icon svg { width: 19px; height: 19px; }
+
+.contact-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.contact-key {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+}
+
+.contact-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.contact-arrow {
+  margin-left: auto;
+  color: var(--term-arrow);
+  font-size: 1rem;
+  flex: 0 0 auto;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+.contact-row a:hover .contact-arrow {
+  color: var(--magenta);
+  transform: translate(2px,-2px);
+}
+
+.term-hint { margin: 4px 0 0; min-height: 18px; color: var(--term-path); transition: color 0.3s ease; }
+
+/* copy feedback state for the email row */
+.contact-row a.is-copied { border-color: var(--violet); background: var(--teal); color: #fff; }
+.contact-row a.is-copied .contact-arrow { color: var(--amber); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 480px){
+  .contact-row a { padding: 14px; gap: 12px; }
+  .contact-value { font-size: 0.88rem; }
+}
