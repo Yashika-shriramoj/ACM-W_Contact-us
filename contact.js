@@ -1,29 +1,40 @@
 /* =====================================================
-   ACM-W BPHC — Contact Us page behaviour
-   Mirrors the theme-toggle / nav / dropdown logic from
-   the homepage's script.js so this page matches its
-   look and feel exactly, plus the contact-card interactions.
+   ACM-W BPHC — Contact Us page behavior
+   Handles responsive mobile nav, interactive terminal,
+   and fluid light/dark mode theme transitions.
    ===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------------------------------------------------
-     THEME TOGGLE — same behaviour as the homepage.
+     THEME TOGGLE
      --------------------------------------------------- */
   const themeToggle = document.getElementById('themeToggle');
+  
   function currentTheme(){
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }
+  
   function setTheme(theme){
+    // Add a temporary class to the terminal to handle smooth color transitions
+    const terminal = document.querySelector('.contact-terminal');
+    if (terminal) {
+      terminal.style.transition = 'background 0.3s ease, border-color 0.3s ease, color 0.3s ease';
+    }
+
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('acmw-theme', theme);
+    
     if(themeToggle){
       themeToggle.setAttribute('aria-pressed', theme === 'dark');
       themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
   }
+  
   if(themeToggle){
+    // Set initial theme state based on local storage or system preference
     setTheme(currentTheme());
+    
     themeToggle.addEventListener('click', () => {
       setTheme(currentTheme() === 'dark' ? 'light' : 'dark');
     });
@@ -72,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hintText = document.getElementById('termHintText');
   const rows = document.querySelectorAll('.contact-row[data-hint]');
   const defaultHint = hintText ? hintText.textContent : '';
+  
   rows.forEach(row => {
     row.addEventListener('mouseenter', () => {
       if(hintText) hintText.textContent = row.dataset.hint;
@@ -89,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(emailRow){
     emailRow.addEventListener('click', async (e) => {
       const email = emailRow.dataset.email;
-      if(!email || !navigator.clipboard) return; // fall back to the mailto link
+      if(!email || !navigator.clipboard) return; // fall back to standard mailto if clipboard isn't available
       e.preventDefault();
       try{
         await navigator.clipboard.writeText(email);
