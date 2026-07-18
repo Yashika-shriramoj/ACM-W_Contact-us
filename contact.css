@@ -16,7 +16,7 @@
   --term-icon-bg: rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="dark"] :root {
+html[data-theme="dark"] {
   --term-bg-soft: var(--navy-fixed-soft);
   --term-bg-dark: var(--navy-fixed);
   --term-text: #D9E4FF;
