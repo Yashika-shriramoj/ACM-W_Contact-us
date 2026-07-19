@@ -3,6 +3,18 @@
    Centered, responsive, and dynamic theme switching
    ===================================================== */
 
+/* ---------- centered hero (contact page only) ---------- */
+.page-hero {
+  text-align: center;
+}
+.page-hero .eyebrow {
+  justify-content: center;
+}
+.page-hero-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Theme Variables local to Contact page */
 :root {
   --term-bg-soft: #f4f6fa;
