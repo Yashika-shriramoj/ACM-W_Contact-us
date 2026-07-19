@@ -95,6 +95,7 @@ html[data-theme="dark"] {
   border-radius: calc(var(--radius) - 4px);
   background: var(--term-row-bg);
   color: var(--term-row-text);
+  text-decoration: none;
   transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, color 0.3s ease;
 }
 
