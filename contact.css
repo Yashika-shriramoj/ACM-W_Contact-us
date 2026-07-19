@@ -5,13 +5,12 @@
 
 /* ---------- centered hero (contact page only) ---------- */
 .page-hero {
-  text-align: center;
+  text-align: left;
 }
 .page-hero .eyebrow {
-  justify-content: center;
+  justify-content: left;
 }
 .page-hero-sub {
-  margin-left: auto;
   margin-right: auto;
 }
 
