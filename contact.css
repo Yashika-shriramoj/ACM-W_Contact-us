@@ -15,6 +15,16 @@
   margin-right: auto;
 }
 
+/* tighten the gap between the hero and the terminal card
+   (overrides style.css's generic .section top padding,
+   scoped here since contact.css only loads on this page) */
+.page-hero {
+  padding-bottom: 16px;
+}
+main > .section {
+  padding-top: 16px;
+}
+
 /* Theme Variables local to Contact page */
 :root {
   --term-bg-soft: #f4f6fa;
